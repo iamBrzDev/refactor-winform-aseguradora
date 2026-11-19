@@ -32,8 +32,16 @@ y la tabla de tarifas está en un módulo **VB.NET** de 2009.
 | 6 | 0 siniestros → −10 %; 3 o más → +30 % |
 | 7 | Redondeo a 2 decimales, IVA 13 % redondeado aparte, total = prima + IVA |
 
-> Las reglas de arriba describen lo que el formulario hace hoy. La demo las fija con pruebas de caracterización
-> **antes** de mover una sola línea; lo que esas pruebas revelen se discute en vivo.
+### Rarezas que el negocio ya aceptó (y que el refactor **no** corrige)
+
+| ID | Comportamiento | Ejemplo |
+|---|---|---|
+| RH-01 | **La prima mínima se aplica antes del descuento por cero siniestros**, así que la prima final puede quedar por debajo de US$150. Comercial lo vende como "descuento de buen cliente sobre la mínima". | Moto US$2,000, rural, 0 siniestros → **US$135.00** |
+| RH-02 | La edad se calcula solo con el año (`hoy.Year - nacimiento.Year`): alguien de 24 años que cumple en diciembre se cotiza como de 25. | Nació 20/12/2001, cotiza 17/11/2026 → sin recargo |
+| RH-03 | El manual dice "10 años o más", el código dice `> 10`: un vehículo de exactamente 10 años no lleva recargo. | Año 2016 en 2026 → sin recargo |
+| RH-04 | `Math.Round` usa redondeo bancario (`ToEven`), no "hacia arriba". | 151.305 → **151.30** |
+
+> Corregir cualquiera de estas reglas es una **decisión de negocio** (ticket + aprobación), no parte del refactor.
 
 ## 3. Requisitos del entorno
 
@@ -48,17 +56,33 @@ y la tabla de tarifas está en un módulo **VB.NET** de 2009.
 
 > Las pruebas y la API corren también en Linux/macOS. Solo el formulario necesita Windows.
 
-## 4. Estructura (punto de partida)
+## 4. Estructura
 
 ```
-├── Aseguradora.Cotizador.slnx
-├── global.json · Directory.Build.targets · .gitignore
-└── src/Legacy/
-    ├── Aseguradora.Tarifas/                 (VB.NET, tabla de tarifas de 2009)
-    └── Aseguradora.Cotizador.WinForms/      (C#, net48: FrmCotizacionAuto)
+├── CLAUDE.md                         ← reglas del equipo para Claude Code
+├── .claude/
+│   ├── settings.json                 ← permisos: allow / ask / deny (secretos excluidos)
+│   ├── agents/guardian-arquitectura.md   ← subagente revisor (no edita; Bash solo lectura y pruebas)
+│   └── skills/caracterizar-legacy/SKILL.md ← skill para generar pruebas de caracterización
+├── src/
+│   ├── Legacy/
+│   │   ├── Aseguradora.Tarifas/                 (VB.NET, net48 + netstandard2.0)
+│   │   └── Aseguradora.Cotizador.WinForms/      (C#, net48)
+│   ├── Aseguradora.Cotizador.Dominio/           (netstandard2.0, sin dependencias)
+│   ├── Aseguradora.Cotizador.Aplicacion/        (netstandard2.0, casos de uso y puertos)
+│   ├── Aseguradora.Cotizador.Infraestructura/   (netstandard2.0, adaptadores)
+│   └── Aseguradora.Cotizador.Api/               (net10.0, Minimal API)
+├── tests/
+│   ├── Aseguradora.Cotizador.Caracterizacion.Tests/  ← mismas pruebas contra Legacy y Dominio
+│   ├── Aseguradora.Cotizador.Arquitectura.Tests/     ← reglas de dependencia entre capas (reflexión + NetArchTest)
+│   └── Aseguradora.Cotizador.Api.Tests/              ← pruebas de integración de la API
+└── docs/
+    ├── guia-demo.md                  ← prompts exactos de la demo, paso por paso
+    └── riesgos-y-reversa.md          ← gobierno de información y plan de reversa
 ```
 
-El resto de capas (Dominio, Aplicación, Infraestructura, API, pruebas, CI, documentación) aparece paso a paso en los tags de la sección 5.
+¿Por qué el dominio es `netstandard2.0`? Porque así **lo consumen a la vez** el WinForms en .NET Framework 4.8
+y la API en .NET 10. Es lo que permite el patrón *strangler*: el formulario sigue vivo mientras el núcleo migra.
 
 ## 5. Ramas y tags
 
@@ -82,14 +106,29 @@ git diff paso-1-claude-md paso-2-costura   # ver exactamente qué cambió en la 
 
 ## 6. Reproducir la demo
 
-La demo en vivo arranca en `paso-1-claude-md` (ya trae `CLAUDE.md` y permisos):
+### Opción A — Seguir la clase con Claude Code (recomendada)
 
 ```bash
 git checkout -b demo paso-1-claude-md
 claude
 ```
 
-Los prompts exactos, los riesgos y el plan de reversa están en la rama `solucion`. Si en algún paso el resultado se desvía, compáralo con el tag correspondiente (`git diff paso-N-... -- ruta`).
+`paso-1-claude-md` ya trae `CLAUDE.md` y permisos (configuración del equipo: no se improvisa en vivo). Para ver el formulario sin nada de eso: `git checkout inicio`.
+
+Sigue los prompts de [`docs/guia-demo.md`](docs/guia-demo.md). Si en algún paso el resultado se desvía,
+compáralo con el tag correspondiente (`git diff paso-N-... -- ruta`).
+
+### Opción B — Revisar la solución
+
+```bash
+git checkout solucion
+dotnet test tests/Aseguradora.Cotizador.Caracterizacion.Tests
+dotnet test tests/Aseguradora.Cotizador.Arquitectura.Tests
+dotnet test tests/Aseguradora.Cotizador.Api.Tests
+dotnet run --project src/Aseguradora.Cotizador.Api      # http://localhost:5080
+```
+
+Luego abre `src/Aseguradora.Cotizador.Api/cotizaciones.http` en Visual Studio 2026 / VS Code y ejecuta las peticiones.
 
 ### Ejecutar el formulario (Windows)
 
@@ -98,7 +137,16 @@ copy src\Legacy\Aseguradora.Cotizador.WinForms\secrets.config.example src\Legacy
 dotnet run --project src\Legacy\Aseguradora.Cotizador.WinForms
 ```
 
+`MotorCotizacion` vale `Legacy` por defecto (`App.config`). Con el formulario **en ejecución**, el archivo que se edita para
+cambiar de motor —o para revertir sin reiniciar— es `bin\Debug\net48\Cotizador.exe.config` (en producción, `Cotizador.exe.config`
+junto al ejecutable), **no** `App.config`: este es solo la plantilla que se copia al compilar, no afecta al proceso que
+ya está corriendo y un nuevo build lo sobrescribe. Valores: `Legacy`, `Sombra`, `Nuevo`; el cambio se toma en el **siguiente clic**.
+
+- `Sombra`: se muestra el resultado heredado y las diferencias con el motor nuevo se escriben en `sombra.log` (junto al ejecutable).
+- `Nuevo`: si el motor nuevo lanza una excepción, se registra con `Trace.TraceError` y se responde con `Legacy`.
+
 ## 7. Seguridad del material
 
 - Sin claves de API, tokens ni cadenas de conexión reales. `secrets.config` está en `.gitignore` y en la lista `deny` de Claude Code.
 - Ningún fragmento proviene de código de empleadores o clientes.
+- Ver [`docs/riesgos-y-reversa.md`](docs/riesgos-y-reversa.md) para la política de uso del asistente con código propietario.
