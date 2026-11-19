@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <!-- netstandard2.0 se agrega SOLO para poder caracterizar este módulo desde pruebas en .NET moderno.
+         Cambio de build, no de código: el WinForms sigue consumiendo la variante net48. -->
+    <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
     <RootNamespace>Aseguradora.Tarifas</RootNamespace>
     <OptionStrict>On</OptionStrict>
     <OptionExplicit>On</OptionExplicit>

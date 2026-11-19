@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Aseguradora.Tarifas;
 
 namespace Aseguradora.Cotizador.WinForms
 {
@@ -26,7 +25,6 @@ namespace Aseguradora.Cotizador.WinForms
             cboZona.SelectedIndex = 0;
         }
 
-        // TODO: mover esto a una clase aparte (2014)
         private void btnCalcular_Click(object sender, EventArgs e)
         {
             decimal suma;
@@ -50,49 +48,11 @@ namespace Aseguradora.Cotizador.WinForms
             DateTime nacimiento = dtpNacimiento.Value;
             int siniestros = (int)nudSiniestros.Value;
 
-            // Prima base según tabla de tarifas (módulo VB)
-            decimal prima = suma * ModTarifas.ObtenerTasaBase(tipo);
-
-            // Recargo por edad del conductor
-            int edad = DateTime.Now.Year - nacimiento.Year;
-            if (edad < 25)
-            {
-                prima = prima * 1.25m;
-            }
-            else if (edad > 65)
-            {
-                prima = prima * 1.15m;
-            }
-
-            // Recargo por antigüedad del vehículo (manual de suscripción: "10 años o más")
-            int antiguedad = DateTime.Now.Year - anioVehiculo;
-            if (antiguedad > 10)
-            {
-                prima = prima * 1.20m;
-            }
-
-            // Ajuste por zona
-            prima = prima * ModTarifas.FactorZona(zona);
-
-            // Prima mínima de la póliza
-            if (prima < 150)
-            {
-                prima = 150;
-            }
-
-            // Bonificación / recargo por siniestralidad (últimos 3 años)
-            if (siniestros == 0)
-            {
-                prima = prima * 0.90m;
-            }
-            else if (siniestros >= 3)
-            {
-                prima = prima * 1.30m;
-            }
-
-            prima = Math.Round(prima, 2);
-            decimal iva = Math.Round(prima * 0.13m, 2);
-            decimal total = prima + iva;
+            ResultadoCotizacionLegacy resultado = CotizadorPrimaLegacy.Cotizar(
+                suma, tipo, anioVehiculo, nacimiento, siniestros, zona, DateTime.Now);
+            decimal prima = resultado.PrimaNeta;
+            decimal iva = resultado.Iva;
+            decimal total = resultado.Total;
 
             lblPrimaNeta.Text = prima.ToString("N2");
             lblIva.Text = iva.ToString("N2");
