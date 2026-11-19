@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Proyecto heredado: Windows Forms sobre .NET Framework 4.8.
+    Para la demo se usa formato SDK-style (más fácil de reproducir); el código
+    y el comportamiento son los del sistema "original" (ficticio).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>7.3</LangVersion>
+    <RootNamespace>Aseguradora.Cotizador.WinForms</RootNamespace>
+    <AssemblyName>Cotizador</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aseguradora.Tarifas\Aseguradora.Tarifas.vbproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- secrets.config NO se versiona (ver .gitignore). Se copia solo si existe localmente. -->
+    <None Update="secrets.config" CopyToOutputDirectory="PreserveNewest" Condition="Exists('secrets.config')" />
+  </ItemGroup>
+
+</Project>

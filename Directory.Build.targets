@@ -1,0 +1,9 @@
+<Project>
+  <!--
+    Permite compilar los proyectos net48 sin el Developer Pack instalado
+    (útil en CI o en máquinas sin Visual Studio). En Windows con VS no estorba.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

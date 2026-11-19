@@ -1,0 +1,19 @@
+# Build
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+*.suo
+
+# Secretos y datos sensibles: nunca al repo (y también en "deny" de .claude/settings.json)
+secrets.config
+*.pfx
+*.snk
+.env
+.env.*
+appsettings.*.local.json
+datos-produccion/
+
+# Configuración personal de Claude Code (la del equipo SÍ se versiona: .claude/settings.json)
+.claude/settings.local.json

@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/legacy/">
+    <Project Path="src/Legacy/Aseguradora.Tarifas/Aseguradora.Tarifas.vbproj" />
+    <Project Path="src/Legacy/Aseguradora.Cotizador.WinForms/Aseguradora.Cotizador.WinForms.csproj" />
+  </Folder>
+</Solution>
