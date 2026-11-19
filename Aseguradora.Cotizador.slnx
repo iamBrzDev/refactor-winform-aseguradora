@@ -3,4 +3,7 @@
     <Project Path="src/Legacy/Aseguradora.Tarifas/Aseguradora.Tarifas.vbproj" />
     <Project Path="src/Legacy/Aseguradora.Cotizador.WinForms/Aseguradora.Cotizador.WinForms.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Aseguradora.Cotizador.Caracterizacion.Tests/Aseguradora.Cotizador.Caracterizacion.Tests.csproj" />
+  </Folder>
 </Solution>
