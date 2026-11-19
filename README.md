@@ -1,4 +1,6 @@
 # Refactorizar sin apagar el negocio
+
+[![ci](https://github.com/iamBrzDev/refactor-winform-aseguradora/actions/workflows/ci.yml/badge.svg)](https://github.com/iamBrzDev/refactor-winform-aseguradora/actions/workflows/ci.yml)
 ### De un formulario Windows Forms a arquitectura limpia con Claude Code
 
 Material de la clase demo para el bootcamp **«Arquitectura Limpia y Refactorización Asistida con Claude Code»**.
@@ -76,6 +78,7 @@ y la tabla de tarifas está en un módulo **VB.NET** de 2009.
 │   ├── Aseguradora.Cotizador.Caracterizacion.Tests/  ← mismas pruebas contra Legacy y Dominio
 │   ├── Aseguradora.Cotizador.Arquitectura.Tests/     ← reglas de dependencia entre capas (reflexión + NetArchTest)
 │   └── Aseguradora.Cotizador.Api.Tests/              ← pruebas de integración de la API
+├── .github/workflows/ci.yml          ← pruebas en Linux + build de la solución (.slnx) en Windows
 └── docs/
     ├── guia-demo.md                  ← prompts exactos de la demo, paso por paso
     └── riesgos-y-reversa.md          ← gobierno de información y plan de reversa

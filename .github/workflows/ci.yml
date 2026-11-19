@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+    branches: [main]      # `solucion` apunta al mismo commit que `main`: no se duplica la ejecución
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: Pruebas (caracterización, arquitectura, API)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Caracterización (Legacy, Dominio y paridad)
+        run: dotnet test tests/Aseguradora.Cotizador.Caracterizacion.Tests --logger "console;verbosity=normal"
+      - name: Arquitectura
+        run: dotnet test tests/Aseguradora.Cotizador.Arquitectura.Tests
+      - name: API
+        run: dotnet test tests/Aseguradora.Cotizador.Api.Tests
+
+  legacy:
+    name: Compilar la solución completa (incluye WinForms .NET Framework 4.8)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Build de Aseguradora.Cotizador.slnx
+        run: dotnet build Aseguradora.Cotizador.slnx -c Release
