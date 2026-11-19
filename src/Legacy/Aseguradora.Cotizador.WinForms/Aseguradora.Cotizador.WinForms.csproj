@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aseguradora.Tarifas\Aseguradora.Tarifas.vbproj" />
+    <!-- Strangler: el formulario net48 consume el dominio nuevo (netstandard2.0). -->
+    <ProjectReference Include="..\..\Aseguradora.Cotizador.Dominio\Aseguradora.Cotizador.Dominio.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -48,7 +48,7 @@ namespace Aseguradora.Cotizador.WinForms
             DateTime nacimiento = dtpNacimiento.Value;
             int siniestros = (int)nudSiniestros.Value;
 
-            ResultadoCotizacionLegacy resultado = CotizadorPrimaLegacy.Cotizar(
+            ResultadoCotizacionLegacy resultado = SelectorMotor.Cotizar(
                 suma, tipo, anioVehiculo, nacimiento, siniestros, zona, DateTime.Now);
             decimal prima = resultado.PrimaNeta;
             decimal iva = resultado.Iva;
