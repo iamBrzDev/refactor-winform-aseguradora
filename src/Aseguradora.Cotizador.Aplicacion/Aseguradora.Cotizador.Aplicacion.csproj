@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Casos de uso y puertos. Regla: solo depende de Dominio. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Aseguradora.Cotizador.Aplicacion</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aseguradora.Cotizador.Dominio\Aseguradora.Cotizador.Dominio.csproj" />
+  </ItemGroup>
+
+</Project>

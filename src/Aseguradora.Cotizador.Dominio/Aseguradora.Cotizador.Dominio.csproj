@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    netstandard2.0: lo consumen a la vez el WinForms (.NET Framework 4.8) y la API (.NET 10).
+    Regla: este proyecto NO referencia ningún otro proyecto ni paquete.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Aseguradora.Cotizador.Dominio</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

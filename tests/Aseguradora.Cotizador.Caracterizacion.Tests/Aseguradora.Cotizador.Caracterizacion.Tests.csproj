@@ -27,4 +27,10 @@
     <ProjectReference Include="..\..\src\Legacy\Aseguradora.Tarifas\Aseguradora.Tarifas.vbproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Código nuevo: se caracteriza con exactamente las mismas pruebas. -->
+    <ProjectReference Include="..\..\src\Aseguradora.Cotizador.Aplicacion\Aseguradora.Cotizador.Aplicacion.csproj" />
+    <ProjectReference Include="..\..\src\Aseguradora.Cotizador.Infraestructura\Aseguradora.Cotizador.Infraestructura.csproj" />
+  </ItemGroup>
+
 </Project>

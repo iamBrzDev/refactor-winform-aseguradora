@@ -3,6 +3,11 @@
     <Project Path="src/Legacy/Aseguradora.Tarifas/Aseguradora.Tarifas.vbproj" />
     <Project Path="src/Legacy/Aseguradora.Cotizador.WinForms/Aseguradora.Cotizador.WinForms.csproj" />
   </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Aseguradora.Cotizador.Dominio/Aseguradora.Cotizador.Dominio.csproj" />
+    <Project Path="src/Aseguradora.Cotizador.Aplicacion/Aseguradora.Cotizador.Aplicacion.csproj" />
+    <Project Path="src/Aseguradora.Cotizador.Infraestructura/Aseguradora.Cotizador.Infraestructura.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Aseguradora.Cotizador.Caracterizacion.Tests/Aseguradora.Cotizador.Caracterizacion.Tests.csproj" />
   </Folder>

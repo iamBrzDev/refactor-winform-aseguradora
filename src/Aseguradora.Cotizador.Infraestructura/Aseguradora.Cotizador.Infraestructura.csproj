@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Adaptadores de los puertos de Aplicacion. En el núcleo real aquí vive el repositorio SQL. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Aseguradora.Cotizador.Infraestructura</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aseguradora.Cotizador.Aplicacion\Aseguradora.Cotizador.Aplicacion.csproj" />
+  </ItemGroup>
+
+</Project>
