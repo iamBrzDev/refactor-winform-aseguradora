@@ -12,5 +12,6 @@
   <Folder Name="/tests/">
     <Project Path="tests/Aseguradora.Cotizador.Caracterizacion.Tests/Aseguradora.Cotizador.Caracterizacion.Tests.csproj" />
     <Project Path="tests/Aseguradora.Cotizador.Api.Tests/Aseguradora.Cotizador.Api.Tests.csproj" />
+    <Project Path="tests/Aseguradora.Cotizador.Arquitectura.Tests/Aseguradora.Cotizador.Arquitectura.Tests.csproj" />
   </Folder>
 </Solution>
