@@ -1,0 +1,54 @@
+@api = http://localhost:5080
+
+### Caso típico: SEDAN urbano (esperado: prima 577.50 si se cotiza en 2026)
+POST {{api}}/api/v1/cotizaciones
+Content-Type: application/json
+
+{
+  "sumaAsegurada": 15000,
+  "tipoVehiculo": "SEDAN",
+  "anioVehiculo": 2020,
+  "fechaNacimientoConductor": "1985-03-10",
+  "siniestrosUltimos3Anios": 1,
+  "zona": "URBANA"
+}
+
+### RH-01: prima mínima antes del descuento (esperado: 135.00, por debajo de la mínima)
+POST {{api}}/api/v1/cotizaciones
+Content-Type: application/json
+
+{
+  "sumaAsegurada": 2000,
+  "tipoVehiculo": "MOTO",
+  "anioVehiculo": 2022,
+  "fechaNacimientoConductor": "1980-05-01",
+  "siniestrosUltimos3Anios": 0,
+  "zona": "RURAL"
+}
+
+### Código desconocido -> 400 con ProblemDetails
+POST {{api}}/api/v1/cotizaciones
+Content-Type: application/json
+
+{
+  "sumaAsegurada": 2000,
+  "tipoVehiculo": "TRACTOR",
+  "anioVehiculo": 2022,
+  "fechaNacimientoConductor": "1980-05-01",
+  "siniestrosUltimos3Anios": 0,
+  "zona": "RURAL"
+}
+
+### Faltan fechaNacimientoConductor y anioVehiculo -> 400 con ProblemDetails
+POST {{api}}/api/v1/cotizaciones
+Content-Type: application/json
+
+{
+  "sumaAsegurada": 2000,
+  "tipoVehiculo": "SEDAN",
+  "siniestrosUltimos3Anios": 0,
+  "zona": "URBANA"
+}
+
+### Documento OpenAPI
+GET {{api}}/openapi/v1.json
